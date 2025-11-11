@@ -1,11 +1,11 @@
 {
-    "status": "\ud83d\udfe0",
+    "status": "\ud83d\udd34",
     "system_health": "ALERT",
-    "stress_index": 69.0,
-    "fault_alert": "\u26a0\ufe0f FAULT DETECTED: AI isolating fault region.",
-    "self_care_action": "\u26a1 Emergency reroute initiated.",
-    "reroute_status": "\ud83d\udd04 Grid rerouted; stability restoring.",
-    "future_prediction": "Trend: INSTABILITY. Reroute active.",
-    "sustainability_focus": "AI balancing renewable input post-fault.",
-    "timestamp": "2025-11-11 17:55:04.000221"
+    "stress_index": 80.4,
+    "fault_alert": "\ud83d\udea8 MICRO-FAILURE PREDICTED: Stress Index 80.4. Failure likely < 72 hours.",
+    "self_care_action": "\u26a1 REROUTE INITIATED: Optimizing alternate grid flow.",
+    "reroute_status": "\u2705 Power rerouted to Line B. Line A isolated for maintenance.",
+    "future_prediction": "Trend: CRITICAL. Immediate maintenance recommended.",
+    "sustainability_focus": "Action: Rerouting prioritizes 1443 MW renewables.",
+    "timestamp": "2025-11-11 17:55:06.456605"
 }
