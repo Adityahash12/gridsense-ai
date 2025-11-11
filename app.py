@@ -167,3 +167,44 @@ st.subheader("🔍 Live Model Output (Debug View)")
 st.json(output_data)
 
 st.caption("GridSense © 2025 | AI-driven predictive fault detection, rerouting & renewable optimization.")
+# --- Optional: Auto-push latest_output.json to GitHub (so frontend sees live updates) ---
+
+import base64
+import requests
+
+# === GitHub Repo Info ===
+GITHUB_REPO = "Adityahash12/gridsense-ai"
+FILE_PATH = "latest_output.json"
+GITHUB_TOKEN = st.secrets.get("GITHUB_TOKEN")  # Secure token stored in Streamlit Secrets
+
+if GITHUB_TOKEN:
+    try:
+        url = f"https://api.github.com/repos/{GITHUB_REPO}/contents/{FILE_PATH}"
+        headers = {"Authorization": f"token {GITHUB_TOKEN}"}
+
+        # Get current file SHA
+        r = requests.get(url, headers=headers)
+        sha = r.json().get("sha", None)
+
+        # Encode new JSON file
+        content = base64.b64encode(json.dumps(output_data, indent=4).encode()).decode()
+
+        data = {
+            "message": "Auto-update AI output JSON",
+            "content": content,
+            "branch": "main",
+        }
+        if sha:
+            data["sha"] = sha
+
+        # Push update to GitHub
+        r = requests.put(url, headers=headers, data=json.dumps(data))
+        if r.status_code in [200, 201]:
+            st.success("✅ Live AI data synced to GitHub successfully.")
+        else:
+            st.warning(f"⚠️ GitHub sync failed: {r.status_code}")
+    except Exception as e:
+        st.warning(f"GitHub push error: {e}")
+else:
+    st.info("ℹ️ GitHub auto-sync disabled (no token found).")
+
