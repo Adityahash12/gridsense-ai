@@ -4,136 +4,94 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>⚡ GridSense AI Live Dashboard</title>
+
   <style>
     body {
       margin: 0;
       background: radial-gradient(circle at top left, #0f172a, #1e293b);
-      color: white;
+      color: #fff;
       font-family: "Inter", sans-serif;
       text-align: center;
       min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
+
     header {
+      background: rgba(30, 64, 175, 0.4);
       padding: 1.5rem;
-      background: rgba(37, 99, 235, 0.25);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      box-shadow: 0 0 25px rgba(37,99,235,0.3);
+      width: 100%;
+      box-shadow: 0 2px 20px rgba(30, 64, 175, 0.4);
       backdrop-filter: blur(10px);
     }
-    h1 { margin: 0; color: #93c5fd; font-size: 2.2rem; }
-    h2 { color: #60a5fa; }
-    #dashboard {
-      display: none;
-      animation: fadeIn 1s ease;
+
+    h1 {
+      margin: 0;
+      font-size: 2rem;
     }
-    #loginBox {
-      background: rgba(255, 255, 255, 0.08);
-      padding: 2rem;
-      border-radius: 16px;
-      margin: 80px auto;
-      width: 300px;
-      box-shadow: 0 0 25px rgba(37, 99, 235, 0.4);
-    }
-    input, button {
+
+    .output-box {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 14px;
+      padding: 1.5rem;
       width: 90%;
-      padding: 0.7rem;
-      margin: 10px 0;
-      border-radius: 8px;
-      border: none;
-      font-size: 1rem;
+      max-width: 700px;
+      margin-top: 2rem;
+      box-shadow: 0 0 40px rgba(37, 99, 235, 0.3);
+      transition: all 0.3s ease;
     }
-    input { background: rgba(255,255,255,0.15); color: white; }
-    button {
-      background: linear-gradient(90deg, #2563eb, #38bdf8);
-      color: white;
-      cursor: pointer;
+
+    .output-box:hover {
+      transform: scale(1.02);
+      box-shadow: 0 0 50px rgba(59, 130, 246, 0.5);
     }
-    button:hover { transform: scale(1.05); }
-    .card {
-      background: rgba(255,255,255,0.1);
-      border-radius: 12px;
-      margin: 20px auto;
-      padding: 20px;
-      max-width: 500px;
-      box-shadow: 0 0 20px rgba(37,99,235,0.3);
+
+    .status {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
     }
+
     footer {
+      margin-top: auto;
+      padding: 1rem;
       font-size: 0.9rem;
       opacity: 0.7;
-      padding: 1rem;
-      background: rgba(255,255,255,0.05);
-      position: fixed;
-      bottom: 0;
-      width: 100%;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
 <body>
   <header>
     <h1>⚡ GridSense AI</h1>
-    <p>Real-Time Predictive Grid Insights (Read-Only)</p>
+    <p>Real-Time Predictive Grid Health Monitoring</p>
   </header>
 
-  <!-- Simple login -->
-  <div id="loginBox">
-    <h2>🔐 Viewer Login</h2>
-    <input type="text" id="user" placeholder="Username" />
-    <input type="password" id="pass" placeholder="Password" />
-    <button onclick="login()">Access Dashboard</button>
-    <div id="error" style="color:#f87171;"></div>
+  <div class="output-box">
+    <div id="status" class="status">Loading AI insights...</div>
+    <pre id="output"></pre>
   </div>
 
-  <!-- Dashboard -->
-  <div id="dashboard">
-    <div class="card">
-      <h2>System Status: <span id="status">Loading...</span></h2>
-      <p><b>Stress Index:</b> <span id="stress">--</span></p>
-      <p><b>Fault Alert:</b> <span id="fault">--</span></p>
-      <p><b>Reroute Status:</b> <span id="reroute">--</span></p>
-      <p><b>Sustainability:</b> <span id="sustain">--</span></p>
-      <p><b>Prediction:</b> <span id="future">--</span></p>
-      <small>Last Updated: <span id="timestamp">--</span></small>
-    </div>
-  </div>
-
-  <footer>© 2025 GridSense Labs | AI-Driven Grid Optimization</footer>
+  <footer>© 2025 GridSense Labs — Powered by AI-driven Sustainability</footer>
 
   <script>
-    async function fetchData() {
+    async function fetchLatestOutput() {
       try {
-        const response = await fetch("https://gridsense-ai-o7m7mnjqzgghn8qrtfhvtt.streamlit.app/latest_output.json");
+        const response = await fetch("https://raw.githubusercontent.com/Adityahash12/gridsense-ai/main/latest_output.json?timestamp=" + new Date().getTime());
+        if (!response.ok) throw new Error("Failed to fetch data");
         const data = await response.json();
 
-        document.getElementById("status").innerText = data.status;
-        document.getElementById("stress").innerText = data.stress_index;
-        document.getElementById("fault").innerText = data.fault_alert;
-        document.getElementById("reroute").innerText = data.reroute_status;
-        document.getElementById("sustain").innerText = data.sustainability_focus;
-        document.getElementById("future").innerText = data.future_prediction;
-        document.getElementById("timestamp").innerText = data.timestamp;
+        document.getElementById("status").textContent = `System Status: ${data.status} (${data.system_health})`;
+        document.getElementById("output").textContent = JSON.stringify(data, null, 2);
       } catch (err) {
-        document.getElementById("status").innerText = "⚠️ Unable to fetch live data";
+        document.getElementById("status").textContent = "⚠️ Error fetching data.";
+        document.getElementById("output").textContent = err.message;
       }
     }
 
-    function login() {
-      const user = document.getElementById("user").value.trim();
-      const pass = document.getElementById("pass").value.trim();
-      const error = document.getElementById("error");
-
-      if (user === "viewer" && pass === "access2025") {
-        document.getElementById("loginBox").style.display = "none";
-        document.getElementById("dashboard").style.display = "block";
-        fetchData();
-        setInterval(fetchData, 15000); // refresh every 15s
-      } else {
-        error.textContent = "❌ Invalid credentials";
-      }
-    }
+    // Fetch every 10 seconds
+    fetchLatestOutput();
+    setInterval(fetchLatestOutput, 10000);
   </script>
 </body>
 </html>
