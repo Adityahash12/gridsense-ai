@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>GridSense AI Dashboard</title>
+  <title>GridSense AI — Secure Access</title>
+
   <style>
     body {
       margin: 0;
@@ -11,6 +12,8 @@
       color: white;
       font-family: "Inter", sans-serif;
       text-align: center;
+      height: 100vh;
+      overflow: hidden;
     }
 
     header {
@@ -27,9 +30,63 @@
       color: #93c5fd;
     }
 
-    p {
-      color: #cbd5e1;
-      font-size: 1.1rem;
+    /* --- Login Screen --- */
+    #loginContainer {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 85vh;
+    }
+
+    #loginBox {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 2rem;
+      border-radius: 16px;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 0 25px rgba(37, 99, 235, 0.4);
+      width: 300px;
+    }
+
+    input {
+      width: 90%;
+      padding: 0.6rem;
+      margin: 0.6rem 0;
+      border: none;
+      border-radius: 6px;
+      outline: none;
+      background: rgba(255, 255, 255, 0.15);
+      color: white;
+      font-size: 1rem;
+    }
+
+    button {
+      width: 95%;
+      background: linear-gradient(90deg, #2563eb, #38bdf8);
+      border: none;
+      padding: 0.7rem;
+      color: white;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 15px rgba(56, 189, 248, 0.6);
+    }
+
+    .error {
+      color: #f87171;
+      margin-top: 0.5rem;
+      font-size: 0.9rem;
+    }
+
+    /* --- Dashboard Frame --- */
+    #dashboardContainer {
+      display: none;
+      animation: fadeIn 1s ease-in-out forwards;
     }
 
     iframe {
@@ -49,18 +106,56 @@
       background: rgba(255, 255, 255, 0.05);
       border-top: 1px solid rgba(255, 255, 255, 0.1);
     }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
   </style>
 </head>
+
 <body>
   <header>
     <h1>⚡ GridSense AI</h1>
-    <p>Real-Time Predictive Grid Health & Sustainability Dashboard</p>
+    <p>Secure Predictive Grid Dashboard Access</p>
   </header>
 
-  <iframe src="https://gridsense-ai-o7m7mnjqzgghn8qrtfhvtt.streamlit.app/" title="GridSense AI Dashboard"></iframe>
+  <!-- LOGIN SECTION -->
+  <div id="loginContainer">
+    <div id="loginBox">
+      <h2>🔐 Login Required</h2>
+      <input type="text" id="username" placeholder="Username" />
+      <input type="password" id="password" placeholder="Password" />
+      <button onclick="authenticate()">Access Dashboard</button>
+      <div class="error" id="errorMsg"></div>
+    </div>
+  </div>
 
-  <footer>
-    <p>© 2025 GridSense Labs | Powered by AI-Driven Grid Optimization</p>
-  </footer>
+  <!-- DASHBOARD SECTION -->
+  <div id="dashboardContainer">
+    <iframe src="https://gridsense-ai-o7m7mnjqzgghn8qrtfhvtt.streamlit.app/" title="GridSense AI Dashboard"></iframe>
+    <footer>
+      <p>© 2025 GridSense Labs | Powered by AI-Driven Grid Optimization</p>
+    </footer>
+  </div>
+
+  <script>
+    function authenticate() {
+      const user = document.getElementById("username").value.trim();
+      const pass = document.getElementById("password").value.trim();
+      const errorMsg = document.getElementById("errorMsg");
+
+      // --- You can customize the username & password below ---
+      const correctUser = "admin";
+      const correctPass = "gridsense2025";
+
+      if (user === correctUser && pass === correctPass) {
+        document.getElementById("loginContainer").style.display = "none";
+        document.getElementById("dashboardContainer").style.display = "block";
+      } else {
+        errorMsg.textContent = "❌ Invalid credentials. Try again.";
+      }
+    }
+  </script>
 </body>
 </html>
