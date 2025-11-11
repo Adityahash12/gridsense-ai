@@ -2,268 +2,214 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>⚡ GridSense AI — Live Grid Dashboard</title>
-
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>⚡ GridSense AI — Live Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
   <style>
-    body {
-      margin: 0;
-      font-family: "Inter", sans-serif;
-      background: radial-gradient(circle at top left, #0f172a, #1e293b);
-      color: #f8fafc;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-start;
-      min-height: 100vh;
+    :root{
+      --bg1:#0f172a; --bg2:#1e293b; --panel:rgba(255,255,255,.06);
+      --ok:#22c55e; --warn:#f59e0b; --bad:#ef4444; --muted:#9aa3b2; --brand:#2563eb;
     }
-
-    header {
-      text-align: center;
-      padding: 1.5rem;
-      width: 100%;
-      background: linear-gradient(90deg, #1e3a8a, #1e40af);
-      box-shadow: 0 4px 30px rgba(37, 99, 235, 0.4);
-      position: fixed;
-      top: 0;
-      left: 0;
-      color: #fff;
-      z-index: 10;
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family:Inter,system-ui,Segoe UI,Arial; color:#e5e7eb;
+      background: radial-gradient(circle at 10% -10%, #0f172a, #1e293b 55%);
+      min-height:100vh;
     }
-
-    header h1 {
-      margin: 0;
-      font-size: 1.8rem;
+    header{
+      padding:22px 16px; text-align:center;
+      background:linear-gradient(180deg, rgba(37,99,235,.25), rgba(37,99,235,.12));
+      border-bottom:1px solid rgba(255,255,255,.08);
     }
-
-    header p {
-      font-size: 0.9rem;
-      opacity: 0.8;
+    .title{font-weight:800; font-size:clamp(22px,3.5vw,34px); letter-spacing:.3px}
+    .subtitle{opacity:.8; margin-top:6px}
+    .wrap{max-width:980px; margin:28px auto; padding:0 16px}
+    .card{
+      background:var(--panel); border:1px solid rgba(255,255,255,.08);
+      border-radius:16px; box-shadow:0 15px 40px rgba(0,0,0,.20); padding:20px;
+      backdrop-filter: blur(10px);
     }
-
-    .login-box, .dashboard {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 18px;
-      padding: 2rem;
-      width: 90%;
-      max-width: 750px;
-      text-align: center;
-      box-shadow: 0 0 50px rgba(37, 99, 235, 0.3);
-      margin-top: 8rem;
-      transition: 0.3s ease;
+    .status-row{display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap}
+    .hline{height:10px; width:100%; background:rgba(255,255,255,.06); border-radius:999px; overflow:hidden; margin-top:14px}
+    .hfill{height:100%; width:0%; background:linear-gradient(90deg, #22c55e, #16a34a); transition:width .5s ease}
+    .pill{padding:6px 10px; border-radius:999px; font-weight:600; font-size:13px; border:1px solid rgba(255,255,255,.12)}
+    .ok{color:var(--ok); box-shadow:0 0 10px rgba(34,197,94,.45)}
+    .warn{color:var(--warn); box-shadow:0 0 10px rgba(245,158,11,.35)}
+    .bad{color:var(--bad); box-shadow:0 0 10px rgba(239,68,68,.35)}
+    .grid{display:grid; grid-template-columns:repeat(2,1fr); gap:16px; margin-top:18px}
+    .cell{background:var(--panel); border:1px solid rgba(255,255,255,.08); border-radius:14px; padding:16px}
+    .cell h4{margin:0 0 6px 0; font-size:15px; color:#eaf2ff}
+    .muted{color:var(--muted); font-size:13px}
+    .center{display:flex; align-items:center; justify-content:center; gap:8px}
+    .err{color:#ffb4b4}
+    .footer{opacity:.65; text-align:center; font-size:13px; margin:22px 0}
+    .login{
+      max-width:420px; margin:40px auto; padding:18px;
+      background:var(--panel); border:1px solid rgba(255,255,255,.08); border-radius:16px;
     }
-
-    input {
-      padding: 0.7rem;
-      border-radius: 8px;
-      border: none;
-      outline: none;
-      width: 80%;
-      margin-top: 1rem;
-      text-align: center;
-      background-color: #1e293b;
-      color: white;
-      font-size: 1rem;
+    input,button{
+      width:100%; padding:12px 14px; border-radius:10px; border:1px solid rgba(255,255,255,.12);
+      background:rgba(255,255,255,.04); color:#e5e7eb; font-family:inherit; font-size:15px
     }
-
-    button {
-      margin-top: 1rem;
-      padding: 0.7rem 1.5rem;
-      border-radius: 10px;
-      border: none;
-      background-color: #2563eb;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-      transition: 0.2s;
-    }
-
-    button:hover { background-color: #1d4ed8; }
-
-    .status-card {
-      background: rgba(0, 0, 0, 0.3);
-      border-radius: 15px;
-      padding: 1rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .ai-status {
-      font-size: 1.5rem;
-      font-weight: bold;
-      margin-bottom: 0.5rem;
-    }
-
-    .stress-index {
-      font-size: 3rem;
-      font-weight: 700;
-      color: #38bdf8;
-      margin: 0.2rem 0;
-    }
-
-    .metric-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 1rem;
-      margin-top: 1rem;
-    }
-
-    .metric {
-      background: rgba(255, 255, 255, 0.08);
-      padding: 1rem;
-      border-radius: 10px;
-      text-align: left;
-    }
-
-    .metric h4 {
-      margin: 0;
-      color: #93c5fd;
-      font-size: 0.95rem;
-      font-weight: 600;
-    }
-
-    .metric p {
-      margin-top: 0.3rem;
-      font-size: 1rem;
-      color: #f1f5f9;
-    }
-
-    .progress-bar {
-      width: 100%;
-      background: rgba(255,255,255,0.1);
-      border-radius: 10px;
-      height: 10px;
-      margin-top: 0.5rem;
-    }
-
-    .progress {
-      height: 10px;
-      border-radius: 10px;
-      background: linear-gradient(90deg, #22c55e, #84cc16);
-      transition: width 0.4s;
-    }
-
-    footer {
-      margin-top: 2rem;
-      font-size: 0.8rem;
-      opacity: 0.6;
-      text-align: center;
-    }
-
-    .healthy { color: #22c55e; }
-    .alert { color: #facc15; }
-    .critical { color: #ef4444; }
+    button{margin-top:12px; background:linear-gradient(90deg,#2563eb,#1d4ed8); border:none; font-weight:700; cursor:pointer}
+    .row{display:flex; gap:10px}
+    .hidden{display:none}
   </style>
 </head>
 <body>
+
   <header>
-    <h1>⚡ GridSense AI</h1>
-    <p>Real-Time Predictive Grid Health Monitoring</p>
+    <div class="title">⚡ GridSense AI</div>
+    <div class="subtitle">Real-Time Predictive Grid Health Monitoring</div>
   </header>
 
-  <!-- LOGIN -->
-  <div class="login-box" id="loginBox">
-    <h2>🔐 Admin Login</h2>
-    <p>Enter password to access AI Dashboard</p>
-    <input type="password" id="passwordInput" placeholder="Enter password" />
-    <button onclick="authenticate()">Login</button>
-    <p id="loginStatus"></p>
+  <!-- LOGIN (basic, client-side) -->
+  <div id="loginBox" class="login">
+    <h3 style="margin:0 0 10px 0;">🔐 Member Login</h3>
+    <div class="row">
+      <input id="user" placeholder="Username (admin)" autocomplete="username">
+      <input id="pass" type="password" placeholder="Password (gridsense2025)" autocomplete="current-password">
+    </div>
+    <button id="loginBtn">Login</button>
+    <div id="loginErr" class="muted" style="margin-top:8px;"></div>
   </div>
 
   <!-- DASHBOARD -->
-  <div class="dashboard" id="dashboard" style="display:none;">
-    <div class="status-card">
-      <div id="aiTitle" class="ai-status">🧠 AI Prediction & Grid Status — ⏳</div>
-      <div class="stress-index" id="stressIndex">--</div>
-      <div class="progress-bar"><div class="progress" id="stressBar" style="width: 0%;"></div></div>
-      <p id="timestamp"></p>
+  <div id="app" class="wrap hidden">
+    <div class="card">
+      <div class="status-row">
+        <div id="headline" style="font-size:20px; font-weight:800;">
+          🧠 AI Prediction & Grid Status — <span id="stateEmoji">🟢</span>
+        </div>
+        <div id="stressBadge" class="pill ok">Combined Stress Index: <span id="stressVal">0.0</span></div>
+      </div>
+      <div class="hline"><div id="bar" class="hfill"></div></div>
+      <div id="updated" class="muted" style="margin-top:8px;">Last updated: —</div>
     </div>
 
-    <div class="metric-grid">
-      <div class="metric">
+    <div class="grid">
+      <div class="cell">
         <h4>⚙️ Fault Alert</h4>
-        <p id="fault_alert"></p>
+        <div id="fault" class="muted">—</div>
       </div>
-      <div class="metric">
+      <div class="cell">
         <h4>🧠 AI Self-Care</h4>
-        <p id="self_care_action"></p>
+        <div id="selfcare" class="muted">—</div>
       </div>
-      <div class="metric">
-        <h4>🔄 Reroute Status</h4>
-        <p id="reroute_status"></p>
+      <div class="cell">
+        <h4>🔁 Reroute Status</h4>
+        <div id="reroute" class="muted">—</div>
       </div>
-      <div class="metric">
+      <div class="cell">
         <h4>📈 Future Prediction</h4>
-        <p id="future_prediction"></p>
+        <div id="future" class="muted">—</div>
       </div>
-      <div class="metric">
-        <h4>🌱 Sustainability Focus</h4>
-        <p id="sustainability_focus"></p>
+      <div class="cell" style="grid-column:1 / -1">
+        <h4>🌿 Sustainability Focus</h4>
+        <div id="sustain" class="muted">—</div>
       </div>
     </div>
 
-    <button onclick="logout()">Logout</button>
-    <footer>© 2025 GridSense Labs — AI-driven predictive fault detection & sustainability intelligence</footer>
+    <div style="text-align:center; margin-top:16px;">
+      <button id="logoutBtn" style="width:auto; padding:10px 16px;">Logout</button>
+    </div>
   </div>
 
-  <script>
-    const ADMIN_PASSWORD = "admin123";  // change if needed
-    const DATA_URL = "https://gridsense-ai-o7m7mnjqzgghn8qrtfhvtt.streamlit.app/latest_output.json";
+  <div class="wrap">
+    <div id="errorBox" class="card hidden center err">⚠️ Failed to fetch</div>
+  </div>
 
-    function authenticate() {
-      const input = document.getElementById("passwordInput").value;
-      if (input === ADMIN_PASSWORD) {
-        localStorage.setItem("authenticated", "true");
-        document.getElementById("loginBox").style.display = "none";
-        document.getElementById("dashboard").style.display = "block";
-        fetchData();
-      } else {
-        document.getElementById("loginStatus").textContent = "❌ Incorrect password.";
-      }
+  <div class="footer">© 2025 GridSense Labs — AI-driven predictive reliability & sustainability.</div>
+
+<script>
+  // ===== CONFIG: read JSON from GitHub (Option A) =====
+  const DATA_URL = "https://raw.githubusercontent.com/Adityahash12/gridsense-ai/main/latest_output.json";
+
+  // ===== Simple login (client-side only) =====
+  const USER = "admin";
+  const PASS = "gridsense2025";
+
+  const els = {
+    loginBox: document.getElementById('loginBox'),
+    loginBtn: document.getElementById('loginBtn'),
+    loginErr: document.getElementById('loginErr'),
+    user: document.getElementById('user'),
+    pass: document.getElementById('pass'),
+    app: document.getElementById('app'),
+    errorBox: document.getElementById('errorBox'),
+    stateEmoji: document.getElementById('stateEmoji'),
+    stressBadge: document.getElementById('stressBadge'),
+    stressVal: document.getElementById('stressVal'),
+    bar: document.getElementById('bar'),
+    updated: document.getElementById('updated'),
+    fault: document.getElementById('fault'),
+    selfcare: document.getElementById('selfcare'),
+    reroute: document.getElementById('reroute'),
+    future: document.getElementById('future'),
+    sustain: document.getElementById('sustain'),
+    logoutBtn: document.getElementById('logoutBtn'),
+  };
+
+  function setBadgeClass(score){
+    els.stressBadge.classList.remove('ok','warn','bad');
+    if (score >= 80){ els.stressBadge.classList.add('bad'); }
+    else if (score >= 60){ els.stressBadge.classList.add('warn'); }
+    else { els.stressBadge.classList.add('ok'); }
+  }
+
+  async function loadData(){
+    try{
+      els.errorBox.classList.add('hidden');
+      const url = DATA_URL + "?t=" + Date.now(); // no-cache
+      const res = await fetch(url);
+      if(!res.ok) throw new Error("HTTP " + res.status);
+      const data = await res.json();
+
+      // status emoji & stress
+      const emoji = data.status || "🟢";
+      const stress = Number(data.stress_index ?? 0).toFixed(1);
+      els.stateEmoji.textContent = emoji;
+      els.stressVal.textContent = stress;
+      setBadgeClass(Number(stress));
+
+      // progress bar (0–100)
+      els.bar.style.width = Math.max(0, Math.min(100, Number(stress))) + "%";
+
+      // cards
+      els.fault.textContent    = data.fault_alert || "—";
+      els.selfcare.textContent = data.self_care_action || "—";
+      els.reroute.textContent  = data.reroute_status || "—";
+      els.future.textContent   = data.future_prediction || "—";
+      els.sustain.textContent  = data.sustainability_focus || "—";
+      els.updated.textContent  = "Last updated: " + (data.timestamp || "—");
+    }catch(e){
+      els.errorBox.classList.remove('hidden');
+      els.errorBox.textContent = "⚠️ Failed to fetch";
+      console.error(e);
     }
+  }
 
-    function logout() {
-      localStorage.removeItem("authenticated");
-      document.getElementById("dashboard").style.display = "none";
-      document.getElementById("loginBox").style.display = "block";
+  // Login handlers
+  els.loginBtn.onclick = () => {
+    if(els.user.value.trim() === USER && els.pass.value === PASS){
+      els.loginBox.classList.add('hidden');
+      els.app.classList.remove('hidden');
+      loadData();
+      // auto-refresh every 15s
+      window.__gsTimer = setInterval(loadData, 15000);
+    }else{
+      els.loginErr.textContent = "Invalid credentials.";
     }
+  };
+  els.logoutBtn.onclick = () => {
+    clearInterval(window.__gsTimer);
+    els.app.classList.add('hidden');
+    els.loginBox.classList.remove('hidden');
+    els.user.value = ""; els.pass.value = ""; els.loginErr.textContent = "";
+  };
 
-    async function fetchData() {
-      try {
-        const response = await fetch(DATA_URL + "?timestamp=" + new Date().getTime());
-        if (!response.ok) throw new Error("Could not fetch data");
-        const data = await response.json();
-        updateUI(data);
-      } catch (err) {
-        document.getElementById("aiTitle").innerHTML = `<span class="critical">⚠️ ${err.message}</span>`;
-      }
-    }
-
-    function updateUI(data) {
-      let colorClass = "healthy";
-      if (data.system_health === "ALERT") colorClass = "alert";
-      if (data.status.includes("🔴")) colorClass = "critical";
-
-      document.getElementById("aiTitle").innerHTML = `🧠 AI Prediction & Grid Status — <span class="${colorClass}">${data.status}</span>`;
-      document.getElementById("stressIndex").textContent = data.stress_index.toFixed(1);
-      document.getElementById("fault_alert").textContent = data.fault_alert;
-      document.getElementById("self_care_action").textContent = data.self_care_action;
-      document.getElementById("reroute_status").textContent = data.reroute_status;
-      document.getElementById("future_prediction").textContent = data.future_prediction;
-      document.getElementById("sustainability_focus").textContent = data.sustainability_focus;
-      document.getElementById("timestamp").textContent = "Last updated: " + data.timestamp;
-      document.getElementById("stressBar").style.width = Math.min(data.stress_index, 100) + "%";
-    }
-
-    setInterval(() => {
-      if (localStorage.getItem("authenticated")) fetchData();
-    }, 10000);
-
-    if (localStorage.getItem("authenticated")) {
-      document.getElementById("loginBox").style.display = "none";
-      document.getElementById("dashboard").style.display = "block";
-      fetchData();
-    }
-  </script>
+  // If you want to auto-open for already-authenticated admins, you can set
+  // a flag in localStorage and check here. Keeping it simple per your ask.
+</script>
 </body>
 </html>
