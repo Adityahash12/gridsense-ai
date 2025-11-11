@@ -126,3 +126,38 @@ output_data = {
 
 with open("model_output.json", "w") as f:
     json.dump(output_data, f, indent=4)
+    
+import json
+import pandas as pd
+
+st.markdown("---")
+st.caption("GridSense: AI-driven fault prediction, rerouting, and renewable optimization in real-time.")
+
+# --- Combine all AI Outputs into one clean JSON ---
+output_data = {
+    "status": status_c,  # 🟢, 🟠, or 🔴
+    "system_health": "HEALTHY" if status_c == "🟢" else "ALERT",
+    "stress_index": round(stress_i, 1),
+    "fault_alert": fault_t,
+    "self_care_action": self_care_t,
+    "reroute_status": reroute_s,
+    "future_prediction": future_p,
+    "sustainability_focus": sustainability_s,
+    "timestamp": str(pd.Timestamp.now())
+}
+
+# --- Save Output to JSON File (for website frontend to fetch) ---
+with open("latest_output.json", "w") as f:
+    json.dump(output_data, f, indent=4)
+
+# --- Admin-only Download Button ---
+st.download_button(
+    label="⬇️ Download Latest Output (Admin Access)",
+    data=json.dumps(output_data, indent=4),
+    file_name="latest_output.json",
+    mime="application/json"
+)
+
+# --- Optional live view for debugging ---
+st.subheader("🔍 Live Model Output (Debug Preview)")
+st.json(output_data)
