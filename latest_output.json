@@ -1,11 +1,11 @@
 {
     "status": "\ud83d\udd34",
     "system_health": "ALERT",
-    "stress_index": 90.8,
-    "fault_alert": "\ud83d\udea8 MICRO-FAILURE PREDICTED: Stress Index 90.8. Failure likely < 72 hours.",
+    "stress_index": 80.6,
+    "fault_alert": "\ud83d\udea8 MICRO-FAILURE PREDICTED: Stress Index 80.6. Failure likely < 72 hours.",
     "self_care_action": "\u26a1 REROUTE INITIATED: Calculating optimal power path.",
     "reroute_status": "\u2705 Stability maintained: Power rerouted to Line B, Line A isolated.",
     "future_prediction": "Trend: CRITICAL. Rising stress; immediate isolation advised.",
     "sustainability_focus": "Action: Rerouting prioritized 1307 MW renewables.",
-    "timestamp": "2025-11-11 17:06:59.765303"
+    "timestamp": "2025-11-11 17:07:02.164598"
 }
