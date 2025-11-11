@@ -1,11 +1,11 @@
 {
-    "status": "\ud83d\udfe2",
-    "system_health": "HEALTHY",
-    "stress_index": 49.3,
-    "fault_alert": "No existing physical fault detected (Fault Sensor: Nominal).",
-    "self_care_action": "AI actively monitoring key stressors.",
-    "reroute_status": "Line A carrying full load, Line B on standby.",
-    "future_prediction": "Stable. No maintenance required.",
-    "sustainability_focus": "Routing 1268 MW clean energy efficiently.",
-    "timestamp": "2025-11-11 17:04:31.987835"
+    "status": "\ud83d\udd34",
+    "system_health": "ALERT",
+    "stress_index": 90.8,
+    "fault_alert": "\ud83d\udea8 MICRO-FAILURE PREDICTED: Stress Index 90.8. Failure likely < 72 hours.",
+    "self_care_action": "\u26a1 REROUTE INITIATED: Calculating optimal power path.",
+    "reroute_status": "\u2705 Stability maintained: Power rerouted to Line B, Line A isolated.",
+    "future_prediction": "Trend: CRITICAL. Rising stress; immediate isolation advised.",
+    "sustainability_focus": "Action: Rerouting prioritized 1307 MW renewables.",
+    "timestamp": "2025-11-11 17:06:59.765303"
 }
