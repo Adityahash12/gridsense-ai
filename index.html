@@ -3,8 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>⚡ GridSense AI Live Dashboard</title>
-
+  <title>⚡ GridSense AI Dashboard</title>
   <style>
     body {
       margin: 0;
@@ -16,82 +15,151 @@
       display: flex;
       flex-direction: column;
       align-items: center;
+      justify-content: center;
     }
 
-    header {
-      background: rgba(30, 64, 175, 0.4);
-      padding: 1.5rem;
-      width: 100%;
-      box-shadow: 0 2px 20px rgba(30, 64, 175, 0.4);
-      backdrop-filter: blur(10px);
-    }
-
-    h1 {
-      margin: 0;
-      font-size: 2rem;
-    }
-
-    .output-box {
+    .login-box, .dashboard {
       background: rgba(255, 255, 255, 0.05);
       border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 14px;
-      padding: 1.5rem;
+      border-radius: 16px;
+      padding: 2rem;
       width: 90%;
-      max-width: 700px;
-      margin-top: 2rem;
+      max-width: 500px;
       box-shadow: 0 0 40px rgba(37, 99, 235, 0.3);
-      transition: all 0.3s ease;
+      transition: 0.3s ease;
     }
 
-    .output-box:hover {
-      transform: scale(1.02);
-      box-shadow: 0 0 50px rgba(59, 130, 246, 0.5);
+    input {
+      padding: 0.6rem;
+      border-radius: 8px;
+      border: none;
+      width: 80%;
+      margin-top: 1rem;
+      outline: none;
+      text-align: center;
+    }
+
+    button {
+      margin-top: 1rem;
+      padding: 0.6rem 1.5rem;
+      border-radius: 10px;
+      border: none;
+      background-color: #2563eb;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      background-color: #1d4ed8;
     }
 
     .status {
       font-size: 1.5rem;
+      margin: 1rem 0;
+    }
+
+    .refresh {
+      font-size: 0.8rem;
+      color: #aaa;
       margin-bottom: 1rem;
     }
 
-    footer {
-      margin-top: auto;
+    .footer {
+      margin-top: 2rem;
+      font-size: 0.8rem;
+      opacity: 0.6;
+    }
+
+    .success { color: #22c55e; }
+    .warning { color: #facc15; }
+    .error { color: #ef4444; }
+
+    pre {
+      background: rgba(0,0,0,0.3);
       padding: 1rem;
-      font-size: 0.9rem;
-      opacity: 0.7;
+      border-radius: 10px;
+      text-align: left;
+      color: #93c5fd;
+      overflow-x: auto;
     }
   </style>
 </head>
 <body>
-  <header>
-    <h1>⚡ GridSense AI</h1>
-    <p>Real-Time Predictive Grid Health Monitoring</p>
-  </header>
-
-  <div class="output-box">
-    <div id="status" class="status">Loading AI insights...</div>
-    <pre id="output"></pre>
+  <!-- LOGIN SECTION -->
+  <div class="login-box" id="loginBox">
+    <h2>🔐 GridSense Admin Access</h2>
+    <p>Enter passcode to view the AI Dashboard</p>
+    <input type="password" id="passwordInput" placeholder="Enter admin password" />
+    <button onclick="authenticate()">Login</button>
+    <p id="loginStatus"></p>
   </div>
 
-  <footer>© 2025 GridSense Labs — Powered by AI-driven Sustainability</footer>
+  <!-- DASHBOARD SECTION -->
+  <div class="dashboard" id="dashboard" style="display:none;">
+    <h2>⚡ GridSense AI — Live Health Status</h2>
+    <div class="status" id="status">Fetching latest AI output...</div>
+    <div class="refresh" id="refreshStatus">Updating every 10 seconds</div>
+    <pre id="output"></pre>
+    <button onclick="logout()">Logout</button>
+    <div class="footer">© 2025 GridSense Labs — Predictive AI Grid Optimization</div>
+  </div>
 
   <script>
-    async function fetchLatestOutput() {
-      try {
-        const response = await fetch("https://raw.githubusercontent.com/Adityahash12/gridsense-ai/main/latest_output.json?timestamp=" + new Date().getTime());
-        if (!response.ok) throw new Error("Failed to fetch data");
-        const data = await response.json();
+    const ADMIN_PASSWORD = "admin123"; // change this for your login
 
-        document.getElementById("status").textContent = `System Status: ${data.status} (${data.system_health})`;
-        document.getElementById("output").textContent = JSON.stringify(data, null, 2);
-      } catch (err) {
-        document.getElementById("status").textContent = "⚠️ Error fetching data.";
-        document.getElementById("output").textContent = err.message;
+    // --- Authentication Logic ---
+    function authenticate() {
+      const password = document.getElementById("passwordInput").value;
+      if (password === ADMIN_PASSWORD) {
+        localStorage.setItem("authenticated", "true");
+        document.getElementById("loginBox").style.display = "none";
+        document.getElementById("dashboard").style.display = "block";
+        fetchLatestOutput();
+      } else {
+        document.getElementById("loginStatus").textContent = "❌ Incorrect password. Try again.";
       }
     }
 
-    // Fetch every 10 seconds
-    fetchLatestOutput();
-    setInterval(fetchLatestOutput, 10000);
+    function logout() {
+      localStorage.removeItem("authenticated");
+      document.getElementById("dashboard").style.display = "none";
+      document.getElementById("loginBox").style.display = "block";
+    }
+
+    // --- Fetch Live AI Output ---
+    async function fetchLatestOutput() {
+      try {
+        const response = await fetch(
+          "https://raw.githubusercontent.com/Adityahash12/gridsense-ai/main/latest_output.json?timestamp=" + new Date().getTime()
+        );
+        if (!response.ok) throw new Error("Unable to fetch live data");
+        const data = await response.json();
+
+        // Status coloring
+        let colorClass = "success";
+        if (data.system_health === "ALERT") colorClass = "warning";
+        if (data.status.includes("🔴")) colorClass = "error";
+
+        document.getElementById("status").innerHTML = `<span class="${colorClass}">${data.status} ${data.system_health}</span>`;
+        document.getElementById("output").textContent = JSON.stringify(data, null, 2);
+      } catch (err) {
+        document.getElementById("status").innerHTML = `<span class="error">⚠️ ${err.message}</span>`;
+      }
+    }
+
+    // Auto-refresh data every 10 seconds
+    setInterval(() => {
+      if (localStorage.getItem("authenticated")) fetchLatestOutput();
+    }, 10000);
+
+    // Keep user logged in across refresh
+    if (localStorage.getItem("authenticated")) {
+      document.getElementById("loginBox").style.display = "none";
+      document.getElementById("dashboard").style.display = "block";
+      fetchLatestOutput();
+    }
   </script>
 </body>
 </html>
