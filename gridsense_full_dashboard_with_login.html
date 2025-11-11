@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>GridSense AI — Full Predictive Dashboard with Login</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg1:#0f172a; --bg2:#1e293b; --panel:rgba(255,255,255,.08);
+    --accent:#60a5fa; --good:#22c55e; --warn:#f59e0b; --bad:#ef4444;
+  }
+  * { box-sizing:border-box; }
+  html,body { height:100%; margin:0; font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial; color:#e5e7eb; }
+  body {
+    background: linear-gradient(180deg,var(--bg1),var(--bg2));
+    overflow-x:hidden;
+  }
+  header {
+    display:flex; justify-content:space-between; align-items:center;
+    background:linear-gradient(90deg,rgba(37,99,235,.25),rgba(34,211,238,.15));
+    padding:14px 18px; backdrop-filter:blur(6px); position:sticky; top:0; z-index:10;
+  }
+  .title { font-weight:800; font-size:20px; background:linear-gradient(90deg,#7dd3fc,#60a5fa); -webkit-background-clip:text; color:transparent; }
+  #logoutBtn { background:transparent; border:1px solid rgba(255,255,255,.06); color:#e6eefc; padding:8px 12px; border-radius:10px; cursor:pointer; font-weight:700 }
+
+  .section { background:var(--panel); margin:20px auto; padding:25px; border-radius:18px; max-width:1100px; box-shadow:0 0 30px rgba(0,0,0,.3); }
+  h2 { color:#93c5fd; text-shadow:0 0 10px rgba(96,165,250,.4); }
+  .slider-group { margin:10px 0; }
+  label { display:flex; justify-content:space-between; }
+  input[type=range] { width:100%; accent-color:#60a5fa; }
+  .output { background:rgba(255,255,255,.05); padding:12px; border-radius:10px; margin-top:10px; }
+  .status { font-weight:800; font-size:1.2em; margin:5px 0; }
+  .green { color:var(--good); }
+  .orange { color:var(--warn); }
+  .red { color:var(--bad); }
+
+  #loginModal {
+    position:fixed; inset:0; background:rgba(0,0,0,0.75); backdrop-filter:blur(8px);
+    display:flex; align-items:center; justify-content:center; z-index:100;
+  }
+  .login-box {
+    background:rgba(255,255,255,.08); padding:30px; border-radius:16px;
+    box-shadow:0 0 30px rgba(0,0,0,.4); width:320px; text-align:center;
+  }
+  .login-box h2 { margin-bottom:20px; color:#93c5fd; }
+  .login-box input { width:100%; padding:10px; margin:8px 0; border:none; border-radius:8px;
+    background:rgba(255,255,255,.1); color:white; font-size:15px; }
+  .login-box button { width:100%; padding:10px; margin-top:10px; border:none; border-radius:8px;
+    background:linear-gradient(90deg,#2563eb,#1d4ed8); color:white; font-weight:700; cursor:pointer; }
+  .login-error { color:#f87171; font-size:13px; margin-top:5px; display:none; }
+</style>
+</head>
+<body>
+<div id="loginModal">
+  <div class="login-box">
+    <h2>🔐 GridSense Login</h2>
+    <input type="text" id="username" placeholder="Username" />
+    <input type="password" id="password" placeholder="Password" />
+    <button onclick="checkLogin()">Login</button>
+    <div class="login-error" id="loginError">Invalid credentials. Try again.</div>
+  </div>
+</div>
+
+<header>
+  <span class="title">⚡ GridSense AI — Predictive Dashboard</span>
+  <button id="logoutBtn" onclick="logout()">Logout</button>
+</header>
+
+<div class="section" id="section1">
+  <h2>1. 📡 Data Collection Layer</h2>
+  <p>Simulate Real-Time Sensor Signals:</p>
+  <div class="slider-group"><label>Temperature Sensors (°C): <span id="tempVal">70</span></label><input id="temperature" type="range" min="50" max="100" value="70" oninput="update('tempVal',this.value)"></div>
+  <div class="slider-group"><label>Humidity Sensors (%): <span id="humVal">60</span></label><input id="humidity" type="range" min="30" max="100" value="60" oninput="update('humVal',this.value)"></div>
+  <div class="slider-group"><label>Component Age/Health Score: <span id="ageVal">40</span></label><input id="age" type="range" min="0" max="100" value="40" oninput="update('ageVal',this.value)"></div>
+  <div class="slider-group"><label>Load Sensors (%): <span id="loadVal">75</span></label><input id="load" type="range" min="0" max="100" value="75" oninput="update('loadVal',this.value)"></div>
+  <button onclick="runAI()" style="margin-top:15px;padding:10px 20px;border:none;border-radius:8px;background:linear-gradient(90deg,#2563eb,#1d4ed8);color:white;font-weight:700;">Run AI Prediction</button>
+</div>
+
+<div class="section" id="section2">
+  <h2>2. 🧠 AI Prediction & Self-Healing Action</h2>
+  <div id="statusText" class="status green">🟢 System Status: HEALTHY</div>
+  <div class="output" id="aiOutput">AI Prediction Model: Monitoring key stressors...</div>
+</div>
+
+<div class="section" id="section3">
+  <h2>3. 🔮 Future Pattern Prediction & Sustainability</h2>
+  <div class="output" id="patternOutput">Trend: STABLE. Stress Index nominal. No immediate maintenance required.</div>
+  <div class="output" id="sustainOutput">Action: MAXIMIZE RENEWABLES: Continue prioritizing clean energy routing.</div>
+</div>
+
+<div class="section" id="section4">
+  <h2>4. 🗺️ Dynamic Rerouting Confirmation</h2>
+  <div class="output" id="rerouteOutput">Current Flow: Line A carrying 100% load. Line B ready.</div>
+</div>
+
+<script>
+function update(id,val){ document.getElementById(id).textContent=val; }
+function runAI(){
+  const t=+document.getElementById('temperature').value;
+  const h=+document.getElementById('humidity').value;
+  const a=+document.getElementById('age').value;
+  const l=+document.getElementById('load').value;
+  const stress=(t*0.4+h*0.3+a*0.3).toFixed(1);
+  let status='🟢 System Status: HEALTHY', color='green';
+  let aiMsg="AI Prediction Model: Monitoring key stressors. Continuous refinement.";
+  let pattern="Trend: STABLE. Stress Index ("+stress+") nominal.";
+  let sustain="Action: MAXIMIZE RENEWABLES: Continue routing efficiently.";
+  let reroute="Current Flow: Line A carrying 100% load. Line B ready.";
+  if(stress>=80){status='🔴 CRITICAL FAILURE PREDICTED';color='red';aiMsg='🚨 High stress index '+stress+'. Failure likely soon.';pattern='Trend: CRITICAL. Stress rising rapidly.';sustain='Action: Rerouting prioritizes renewables to stabilize.';reroute='✅ Load transferred to Line B. Line A isolated.';}
+  else if(l>85){status='🟠 WARNING: HIGH LOAD';color='orange';aiMsg='⚠️ Load '+l+'% nearing unsafe limit.';pattern='Trend: Rising stress expected.';sustain='Action: Shift 10% load to Line B.';reroute='🔄 Partial reroute initiated.';}
+  document.getElementById('statusText').textContent=status;
+  document.getElementById('statusText').className='status '+color;
+  document.getElementById('aiOutput').textContent=aiMsg;
+  document.getElementById('patternOutput').textContent=pattern;
+  document.getElementById('sustainOutput').textContent=sustain;
+  document.getElementById('rerouteOutput').textContent=reroute;
+}
+
+/* Login Logic */
+const loginModal=document.getElementById('loginModal');
+function checkLogin(){
+  const u=document.getElementById('username').value.trim();
+  const p=document.getElementById('password').value.trim();
+  if((u==='aditya'&&p==='gridsense')||(u==='admin'&&p==='1234')){
+    sessionStorage.setItem('gridsenseFull','1');
+    loginModal.style.display='none';
+  } else {
+    document.getElementById('loginError').style.display='block';
+  }
+}
+function logout(){
+  sessionStorage.removeItem('gridsenseFull');
+  loginModal.style.display='flex';
+}
+window.onload=()=>{
+  if(sessionStorage.getItem('gridsenseFull')) loginModal.style.display='none';
+};
+</script>
+</body>
+</html>
