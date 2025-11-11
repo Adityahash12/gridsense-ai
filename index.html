@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>⚡ GridSense AI Dashboard</title>
+  <title>⚡ GridSense AI</title>
   <style>
     body {
       margin: 0;
@@ -27,12 +27,10 @@
       margin: 0;
       font-size: 2rem;
       color: #93c5fd;
-      letter-spacing: 1px;
     }
 
     p {
-      margin: 0.2rem 0;
-      font-size: 1rem;
+      margin: 0.3rem 0;
       opacity: 0.8;
     }
 
@@ -41,8 +39,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      height: 85vh;
-      transition: opacity 0.5s ease;
+      height: 80vh;
     }
 
     #loginBox {
@@ -96,19 +93,19 @@
       animation: fadeIn 1s ease-in-out forwards;
     }
 
-    .open-link {
-      margin-top: 30px;
+    .launch-btn {
+      margin-top: 40px;
       display: inline-block;
-      padding: 0.9rem 2rem;
+      padding: 1rem 2rem;
       background: linear-gradient(90deg, #2563eb, #38bdf8);
       color: white;
       border-radius: 10px;
-      font-size: 1.1rem;
+      font-size: 1.2rem;
       text-decoration: none;
       transition: 0.3s;
     }
 
-    .open-link:hover {
+    .launch-btn:hover {
       background: linear-gradient(90deg, #1e40af, #06b6d4);
       transform: scale(1.05);
       box-shadow: 0 0 20px rgba(37, 99, 235, 0.5);
@@ -146,15 +143,15 @@
     </div>
   </div>
 
-  <!-- DASHBOARD LINK -->
+  <!-- DASHBOARD SECTION -->
   <div id="dashboardContainer">
     <h2>Welcome to the GridSense AI System 🧠</h2>
-    <p>Click below to open the live predictive dashboard.</p>
+    <p>Click below to open the live predictive dashboard:</p>
     <a 
-      class="open-link" 
+      class="launch-btn" 
       href="https://gridsense-ai-o7m7mnjqzgghn8qrtfhvtt.streamlit.app/" 
       target="_blank">
-      🌐 Open Live Dashboard
+      🚀 Launch Dashboard
     </a>
     <footer>
       <p>© 2025 GridSense Labs | AI-Driven Grid Optimization</p>
