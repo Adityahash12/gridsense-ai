@@ -18,26 +18,36 @@
       background: rgba(37, 99, 235, 0.3);
       backdrop-filter: blur(8px);
       border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
     }
 
     h1 {
       font-size: 2rem;
       margin-bottom: 0.5rem;
+      color: #93c5fd;
+    }
+
+    p {
+      color: #cbd5e1;
+      font-size: 1.1rem;
     }
 
     iframe {
-      width: 100%;
-      height: 90vh;
+      width: 90%;
+      height: 85vh;
       border: none;
-      border-radius: 12px;
+      border-radius: 16px;
       box-shadow: 0 0 40px rgba(37, 99, 235, 0.4);
-      margin-top: 10px;
+      margin-top: 20px;
+      background-color: #0f172a;
     }
 
-    .footer {
+    footer {
       font-size: 0.9rem;
       padding: 1rem;
       opacity: 0.6;
+      background: rgba(255, 255, 255, 0.05);
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
     }
   </style>
 </head>
@@ -49,8 +59,8 @@
 
   <iframe src="https://gridsense-ai-o7m7mnjqzgghn8qrtfhvtt.streamlit.app/" title="GridSense AI Dashboard"></iframe>
 
-  <div class="footer">
+  <footer>
     <p>© 2025 GridSense Labs | Powered by AI-Driven Grid Optimization</p>
-  </div>
+  </footer>
 </body>
 </html>
