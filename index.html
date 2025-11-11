@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>⚡ GridSense AI</title>
+  <title>⚡ GridSense AI Live Dashboard</title>
   <style>
     body {
       margin: 0;
@@ -11,167 +11,127 @@
       color: white;
       font-family: "Inter", sans-serif;
       text-align: center;
-      height: 100vh;
-      overflow: hidden;
+      min-height: 100vh;
     }
-
     header {
-      padding: 1.2rem;
+      padding: 1.5rem;
       background: rgba(37, 99, 235, 0.25);
-      backdrop-filter: blur(8px);
       border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      box-shadow: 0 0 20px rgba(37, 99, 235, 0.3);
+      box-shadow: 0 0 25px rgba(37,99,235,0.3);
+      backdrop-filter: blur(10px);
     }
-
-    h1 {
-      margin: 0;
-      font-size: 2rem;
-      color: #93c5fd;
+    h1 { margin: 0; color: #93c5fd; font-size: 2.2rem; }
+    h2 { color: #60a5fa; }
+    #dashboard {
+      display: none;
+      animation: fadeIn 1s ease;
     }
-
-    p {
-      margin: 0.3rem 0;
-      opacity: 0.8;
-    }
-
-    #loginContainer {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 80vh;
-    }
-
     #loginBox {
       background: rgba(255, 255, 255, 0.08);
       padding: 2rem;
       border-radius: 16px;
-      backdrop-filter: blur(10px);
-      box-shadow: 0 0 25px rgba(37, 99, 235, 0.4);
+      margin: 80px auto;
       width: 300px;
-      animation: fadeIn 1s ease;
+      box-shadow: 0 0 25px rgba(37, 99, 235, 0.4);
     }
-
-    input {
+    input, button {
       width: 90%;
-      padding: 0.6rem;
-      margin: 0.6rem 0;
-      border: none;
-      border-radius: 6px;
-      outline: none;
-      background: rgba(255, 255, 255, 0.15);
-      color: white;
-      font-size: 1rem;
-    }
-
-    button {
-      width: 95%;
-      background: linear-gradient(90deg, #2563eb, #38bdf8);
-      border: none;
       padding: 0.7rem;
-      color: white;
+      margin: 10px 0;
       border-radius: 8px;
+      border: none;
       font-size: 1rem;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      margin-top: 10px;
     }
-
-    button:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 15px rgba(56, 189, 248, 0.6);
-    }
-
-    .error {
-      color: #f87171;
-      margin-top: 0.5rem;
-      font-size: 0.9rem;
-    }
-
-    #dashboardContainer {
-      display: none;
-      animation: fadeIn 1s ease-in-out forwards;
-    }
-
-    .launch-btn {
-      margin-top: 40px;
-      display: inline-block;
-      padding: 1rem 2rem;
+    input { background: rgba(255,255,255,0.15); color: white; }
+    button {
       background: linear-gradient(90deg, #2563eb, #38bdf8);
       color: white;
-      border-radius: 10px;
-      font-size: 1.2rem;
-      text-decoration: none;
-      transition: 0.3s;
+      cursor: pointer;
     }
-
-    .launch-btn:hover {
-      background: linear-gradient(90deg, #1e40af, #06b6d4);
-      transform: scale(1.05);
-      box-shadow: 0 0 20px rgba(37, 99, 235, 0.5);
+    button:hover { transform: scale(1.05); }
+    .card {
+      background: rgba(255,255,255,0.1);
+      border-radius: 12px;
+      margin: 20px auto;
+      padding: 20px;
+      max-width: 500px;
+      box-shadow: 0 0 20px rgba(37,99,235,0.3);
     }
-
     footer {
       font-size: 0.9rem;
+      opacity: 0.7;
       padding: 1rem;
-      opacity: 0.6;
-      background: rgba(255, 255, 255, 0.05);
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(255,255,255,0.05);
+      position: fixed;
+      bottom: 0;
+      width: 100%;
     }
-
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(15px); }
+      from { opacity: 0; transform: translateY(10px); }
       to { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
-
 <body>
   <header>
     <h1>⚡ GridSense AI</h1>
-    <p>Secure Predictive Grid Dashboard Access</p>
+    <p>Real-Time Predictive Grid Insights (Read-Only)</p>
   </header>
 
-  <!-- LOGIN SCREEN -->
-  <div id="loginContainer">
-    <div id="loginBox">
-      <h2>🔐 Authorized Access</h2>
-      <input type="text" id="username" placeholder="Username" />
-      <input type="password" id="password" placeholder="Password" />
-      <button onclick="authenticate()">Access Dashboard</button>
-      <div class="error" id="errorMsg"></div>
+  <!-- Simple login -->
+  <div id="loginBox">
+    <h2>🔐 Viewer Login</h2>
+    <input type="text" id="user" placeholder="Username" />
+    <input type="password" id="pass" placeholder="Password" />
+    <button onclick="login()">Access Dashboard</button>
+    <div id="error" style="color:#f87171;"></div>
+  </div>
+
+  <!-- Dashboard -->
+  <div id="dashboard">
+    <div class="card">
+      <h2>System Status: <span id="status">Loading...</span></h2>
+      <p><b>Stress Index:</b> <span id="stress">--</span></p>
+      <p><b>Fault Alert:</b> <span id="fault">--</span></p>
+      <p><b>Reroute Status:</b> <span id="reroute">--</span></p>
+      <p><b>Sustainability:</b> <span id="sustain">--</span></p>
+      <p><b>Prediction:</b> <span id="future">--</span></p>
+      <small>Last Updated: <span id="timestamp">--</span></small>
     </div>
   </div>
 
-  <!-- DASHBOARD SECTION -->
-  <div id="dashboardContainer">
-    <h2>Welcome to the GridSense AI System 🧠</h2>
-    <p>Click below to open the live predictive dashboard:</p>
-    <a 
-      class="launch-btn" 
-      href="https://gridsense-ai-o7m7mnjqzgghn8qrtfhvtt.streamlit.app/" 
-      target="_blank">
-      🚀 Launch Dashboard
-    </a>
-    <footer>
-      <p>© 2025 GridSense Labs | AI-Driven Grid Optimization</p>
-    </footer>
-  </div>
+  <footer>© 2025 GridSense Labs | AI-Driven Grid Optimization</footer>
 
   <script>
-    function authenticate() {
-      const user = document.getElementById("username").value.trim();
-      const pass = document.getElementById("password").value.trim();
-      const errorMsg = document.getElementById("errorMsg");
+    async function fetchData() {
+      try {
+        const response = await fetch("https://gridsense-ai-o7m7mnjqzgghn8qrtfhvtt.streamlit.app/latest_output.json");
+        const data = await response.json();
 
-      const correctUser = "admin";
-      const correctPass = "gridsense2025";
+        document.getElementById("status").innerText = data.status;
+        document.getElementById("stress").innerText = data.stress_index;
+        document.getElementById("fault").innerText = data.fault_alert;
+        document.getElementById("reroute").innerText = data.reroute_status;
+        document.getElementById("sustain").innerText = data.sustainability_focus;
+        document.getElementById("future").innerText = data.future_prediction;
+        document.getElementById("timestamp").innerText = data.timestamp;
+      } catch (err) {
+        document.getElementById("status").innerText = "⚠️ Unable to fetch live data";
+      }
+    }
 
-      if (user === correctUser && pass === correctPass) {
-        document.getElementById("loginContainer").style.display = "none";
-        document.getElementById("dashboardContainer").style.display = "block";
+    function login() {
+      const user = document.getElementById("user").value.trim();
+      const pass = document.getElementById("pass").value.trim();
+      const error = document.getElementById("error");
+
+      if (user === "viewer" && pass === "access2025") {
+        document.getElementById("loginBox").style.display = "none";
+        document.getElementById("dashboard").style.display = "block";
+        fetchData();
+        setInterval(fetchData, 15000); // refresh every 15s
       } else {
-        errorMsg.textContent = "❌ Invalid username or password.";
+        error.textContent = "❌ Invalid credentials";
       }
     }
   </script>
