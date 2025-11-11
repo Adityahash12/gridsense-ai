@@ -152,6 +152,12 @@ st.download_button(
 # 🚀 AUTO PUSH TO GITHUB (Option 1)
 # ==============================
 
+# ==============================
+# 🔄 AUTO-PUSH JSON TO GITHUB
+# ==============================
+import base64
+import requests
+
 GITHUB_REPO = "Adityahash12/gridsense-ai"
 FILE_PATH = "latest_output.json"
 GITHUB_TOKEN = st.secrets.get("GITHUB_TOKEN")
@@ -159,35 +165,39 @@ GITHUB_TOKEN = st.secrets.get("GITHUB_TOKEN")
 if GITHUB_TOKEN:
     try:
         url = f"https://api.github.com/repos/{GITHUB_REPO}/contents/{FILE_PATH}"
-        headers = {"Authorization": f"token {GITHUB_TOKEN}"}
+        headers = {
+            "Authorization": f"token {GITHUB_TOKEN}",
+            "Accept": "application/vnd.github+json"
+        }
 
-        # Get existing file SHA
-        r = requests.get(url, headers=headers)
-        sha = r.json().get("sha", None)
+        # 1. Get the current file SHA
+        get_resp = requests.get(url, headers=headers)
+        sha = get_resp.json().get("sha")
 
-        # Encode JSON content
+        # 2. Encode the latest JSON content
         content = base64.b64encode(json.dumps(output_data, indent=4).encode()).decode()
 
+        # 3. Build payload
         data = {
-            "message": "Auto-update latest_output.json from Streamlit",
+            "message": "🔄 Auto-update latest_output.json from Streamlit",
             "content": content,
             "branch": "main"
         }
         if sha:
             data["sha"] = sha
 
-        # Push update to GitHub
-        r = requests.put(url, headers=headers, data=json.dumps(data))
-        if r.status_code in [200, 201]:
-            st.success("✅ Synced: AI output pushed live to GitHub successfully.")
+        # 4. Push update
+        put_resp = requests.put(url, headers=headers, data=json.dumps(data))
+        if put_resp.status_code in [200, 201]:
+            st.success("✅ Synced: latest_output.json pushed to GitHub.")
         else:
-            st.warning(f"⚠️ GitHub sync failed — Status: {r.status_code}")
-    except Exception as e:
-        st.warning(f"⚠️ GitHub sync error: {e}")
-else:
-    st.info("ℹ️ GitHub auto-sync disabled (no token found in secrets).")
+            st.error(f"❌ GitHub push failed: {put_resp.status_code} — {put_resp.text}")
 
-# ==============================
+    except Exception as e:
+        st.error(f"⚠️ GitHub push error: {e}")
+else:
+    st.warning("⚠️ GitHub token missing in Streamlit Secrets.")
+
 # 🧾 DEBUG VIEW
 # ==============================
 st.subheader("🔍 Live Model Output (Debug View)")
