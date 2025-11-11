@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>GridSense AI — Secure Access</title>
-
+  <title>⚡ GridSense AI Dashboard</title>
   <style>
+    /* Global Styles */
     body {
       margin: 0;
       background: radial-gradient(circle at top left, #0f172a, #1e293b);
@@ -17,35 +17,44 @@
     }
 
     header {
-      padding: 1.5rem;
-      background: rgba(37, 99, 235, 0.3);
+      padding: 1.2rem;
+      background: rgba(37, 99, 235, 0.25);
       backdrop-filter: blur(8px);
       border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 0 20px rgba(37, 99, 235, 0.3);
     }
 
     h1 {
+      margin: 0;
       font-size: 2rem;
-      margin-bottom: 0.5rem;
       color: #93c5fd;
+      letter-spacing: 1px;
     }
 
-    /* --- Login Screen --- */
+    p {
+      margin: 0.2rem 0;
+      font-size: 1rem;
+      opacity: 0.8;
+    }
+
+    /* Login Container */
     #loginContainer {
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       height: 85vh;
+      transition: opacity 0.5s ease;
     }
 
     #loginBox {
-      background: rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.08);
       padding: 2rem;
       border-radius: 16px;
-      backdrop-filter: blur(8px);
+      backdrop-filter: blur(10px);
       box-shadow: 0 0 25px rgba(37, 99, 235, 0.4);
       width: 300px;
+      animation: fadeIn 1s ease;
     }
 
     input {
@@ -70,6 +79,7 @@
       font-size: 1rem;
       cursor: pointer;
       transition: all 0.3s ease;
+      margin-top: 10px;
     }
 
     button:hover {
@@ -83,7 +93,7 @@
       font-size: 0.9rem;
     }
 
-    /* --- Dashboard Frame --- */
+    /* Dashboard Container */
     #dashboardContainer {
       display: none;
       animation: fadeIn 1s ease-in-out forwards;
@@ -108,8 +118,14 @@
     }
 
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
+      from {
+        opacity: 0;
+        transform: translateY(15px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
   </style>
 </head>
@@ -117,13 +133,13 @@
 <body>
   <header>
     <h1>⚡ GridSense AI</h1>
-    <p>Secure Predictive Grid Dashboard Access</p>
+    <p>Real-Time Predictive Grid Intelligence Dashboard</p>
   </header>
 
-  <!-- LOGIN SECTION -->
+  <!-- LOGIN SCREEN -->
   <div id="loginContainer">
     <div id="loginBox">
-      <h2>🔐 Login Required</h2>
+      <h2>🔐 Authorized Access</h2>
       <input type="text" id="username" placeholder="Username" />
       <input type="password" id="password" placeholder="Password" />
       <button onclick="authenticate()">Access Dashboard</button>
@@ -133,7 +149,10 @@
 
   <!-- DASHBOARD SECTION -->
   <div id="dashboardContainer">
-    <iframe src="https://gridsense-ai-o7m7mnjqzgghn8qrtfhvtt.streamlit.app/" title="GridSense AI Dashboard"></iframe>
+    <iframe 
+      src="https://gridsense-ai-o7m7mnjqzgghn8qrtfhvtt.streamlit.app/" 
+      title="GridSense AI Dashboard">
+    </iframe>
     <footer>
       <p>© 2025 GridSense Labs | Powered by AI-Driven Grid Optimization</p>
     </footer>
@@ -145,7 +164,7 @@
       const pass = document.getElementById("password").value.trim();
       const errorMsg = document.getElementById("errorMsg");
 
-      // --- You can customize the username & password below ---
+      // Change these to whatever credentials you want:
       const correctUser = "admin";
       const correctPass = "gridsense2025";
 
@@ -153,7 +172,7 @@
         document.getElementById("loginContainer").style.display = "none";
         document.getElementById("dashboardContainer").style.display = "block";
       } else {
-        errorMsg.textContent = "❌ Invalid credentials. Try again.";
+        errorMsg.textContent = "❌ Invalid username or password.";
       }
     }
   </script>
