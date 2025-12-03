@@ -1,11 +1,11 @@
 {
     "status": "\ud83d\udfe2",
     "system_health": "HEALTHY",
-    "stress_index": 46.7,
+    "stress_index": 65.9,
     "fault_alert": "No existing physical fault detected (Fault Sensor: Nominal).",
     "self_care_action": "AI actively monitoring key stressors.",
     "reroute_status": "Line A carrying full load, Line B on standby.",
-    "future_prediction": "Load 84%. Balancing recommended.",
-    "sustainability_focus": "Shift 10% of load to secondary line.",
-    "timestamp": "2025-12-03 18:56:52.968776"
+    "future_prediction": "Stable. No maintenance required.",
+    "sustainability_focus": "Routing 568 MW clean energy efficiently.",
+    "timestamp": "2025-12-03 19:01:52.996577"
 }
