@@ -5,7 +5,7 @@
     "fault_alert": "No existing physical fault detected (Fault Sensor: Nominal).",
     "self_care_action": "AI actively monitoring key stressors.",
     "reroute_status": "Line A carrying full load, Line B on standby.",
-    "future_prediction": "Load 82%. Balancing recommended.",
-    "sustainability_focus": "Shift 10% of load to secondary line.",
-    "timestamp": "2025-12-08 15:31:52.964774"
+    "future_prediction": "Stable. No maintenance required.",
+    "sustainability_focus": "Routing 891 MW clean energy efficiently.",
+    "timestamp": "2025-12-08 15:36:52.960905"
 }
