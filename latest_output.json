@@ -1,11 +1,11 @@
 {
     "status": "\ud83d\udfe0",
     "system_health": "ALERT",
-    "stress_index": 45.4,
+    "stress_index": 63.3,
     "fault_alert": "\u26a0\ufe0f FAULT DETECTED: AI isolating fault region.",
     "self_care_action": "\u26a1 Emergency reroute initiated.",
     "reroute_status": "\ud83d\udd04 Grid rerouted; stability restoring.",
     "future_prediction": "Trend: INSTABILITY. Reroute active.",
     "sustainability_focus": "AI balancing renewable input post-fault.",
-    "timestamp": "2025-12-11 11:06:53.010801"
+    "timestamp": "2025-12-11 11:11:52.989560"
 }
